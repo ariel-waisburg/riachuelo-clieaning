@@ -1,0 +1,39 @@
+Grupo,Parámetro,Unidad,I a,I b,II,III,IV
+Físico-químicos,Nitrógeno Amoniacal,mg NH4+/l,"<0,6","<0,6",<3,<3,<3
+Físico-químicos,Clorofila a,μg/l,<30,<30,<30,<30,<30
+Físico-químicos,DBO5,mg O2/l,<5,<5,<10,<15,<15
+Físico-químicos,Detergentes (S.A.A.M.),mg SAAM/l,"<0,5","<0,5","<0,5",<5,<5
+Físico-químicos,Fósforo Total,μg P/l,<10,<10,<1000,<5000,<5000
+Físico-químicos,Nitrógeno de Nitratos,mg NO3-/l,<10,<10,<10,<10,<10
+Físico-químicos,OD,mg/l,>5,>5,>5,>4,>2
+Físico-químicos,pH,UpH,"6,5-9","6,5-9","6,5-9","6,5-9",6-9
+Físico-químicos,Temperatura,°C,<35,<35,<35,<35,<35
+Inorgánicos,Arsénico total,μg As/l,<50,<50,<50,<50,<50
+Inorgánicos,Cadmio total,μg Cd/l,"<0,25","<0,25",<5,<5,<5
+Inorgánicos,Cinc total,μg Zn/l,<120,<120,<3000,<3000,<3000
+Inorgánicos,Cianuro total,μg CN-/l,"<11,2","<11,2",<100,<100,<100
+Inorgánicos,Cobre total,μg Cu/l,<9,<9,<200,<200,<200
+Inorgánicos,Cromo total,μg Cr/l,<2,<2,<50,<50,<50
+Inorgánicos,Cromo hexavalente,μg Cr6+/l,<2,<2,<50,<50,<50
+Inorgánicos,Mercurio total,μg Hg/l,"<0,77","<0,77",<1,<1,<1
+Inorgánicos,Níquel total,μg Ni/l,<25,<25,<25,<25,<25
+Inorgánicos,Plomo total,μg Pb/l,<2,<2,<50,<50,<50
+Inorgánicos,Sulfuros,μg S2-/l,<2,<2,<50,<50,<1000
+Inorgánicos,Sustancias Fenólicas,μg/l,<4,<4,<50,<100,<1000
+"Orgánicos, biocidas y microbiológicos",Hidrocarburos totales,μg/l,<50,<50,<50,<200,<10000
+"Orgánicos, biocidas y microbiológicos",Coliformes fecales,UFC/100 ml,<150,<150,<150,<1000,<1000
+"Orgánicos, biocidas y microbiológicos",Escherichia coli,UFC/100 ml,<126,<126,<126,<126,<126
+"Orgánicos, biocidas y microbiológicos",Aldrín,μg/l,"<0,01","<0,01","<0,01","<0,01","<0,01"
+"Orgánicos, biocidas y microbiológicos",Clordano,μg/l,"<0,1","<0,1","<0,1","<0,1","<0,1"
+"Orgánicos, biocidas y microbiológicos",DDT (Total Isómeros),μg/l,<1,<1,<1,<1,<1
+"Orgánicos, biocidas y microbiológicos",Dieldrín,μg/l,"<0,01","<0,01","<0,01","<0,01","<0,01"
+"Orgánicos, biocidas y microbiológicos",Endosulfán,μg/l,"<0,02","<0,02","<0,02","<0,02","<0,02"
+"Orgánicos, biocidas y microbiológicos",Endrín,μg/l,"<0,04","<0,04","<0,04","<0,04","<0,04"
+"Orgánicos, biocidas y microbiológicos",Heptacloro,μg/l,"<0,04","<0,04","<0,04","<0,04","<0,04"
+"Orgánicos, biocidas y microbiológicos",Heptacloro epóxido,μg/l,"<0,04","<0,04","<0,04","<0,04","<0,04"
+"Orgánicos, biocidas y microbiológicos",Hexacloro benceno,μg/l,"<0,01","<0,01","<0,01","<0,01","<0,01"
+"Orgánicos, biocidas y microbiológicos",Lindano,μg/l,<3,<3,<3,<3,<3
+"Orgánicos, biocidas y microbiológicos",Metoxicloro,μg/l,<30,<30,<30,<30,<30
+"Orgánicos, biocidas y microbiológicos",Paration,μg/l,"<0,65","<0,65","<0,65","<0,65","<0,65"
+"Orgánicos, biocidas y microbiológicos",Malation,μg/l,"<0,65","<0,65","<0,65","<0,65","<0,65"
+"Orgánicos, biocidas y microbiológicos","2,4 D",μg/l,<4,<4,<4,<4,<4
