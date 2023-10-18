@@ -2,6 +2,8 @@ import pandas as pd
 from shapely.geometry import Point
 from shapely.wkt import loads
 import geopandas as gpd
+from shapely.geometry import MultiPolygon
+from shapely.geometry import shape
 
 data_mediciones = pd.read_csv('acumar_mediciones.csv')
 data_limites_subcuencas = gpd.read_file('LIMITES_SUBCUENCAS_.csv')
@@ -16,8 +18,33 @@ data_mediciones = gpd.GeoDataFrame(data_mediciones, geometry='geometry')
 geo_df_subcuencas = gpd.GeoDataFrame(data_limites_subcuencas, geometry=data_limites_subcuencas['geometry_subcuencas'])
 geo_df_cuencas = gpd.GeoDataFrame(data_limites_cuencas, geometry=data_limites_cuencas['geometry_cuencas'])
 
-print(type(data_mediciones))
-print(type(geo_df_cuencas[['OBJECTID', 'JURISDIC', 'geometry_cuencas']]))
+# print(type(data_mediciones))
+# print(type(geo_df_cuencas[['OBJECTID', 'JURISDIC', 'geometry_cuencas']]))
+
+# print(data_mediciones)
+
+def encontrar_subcuenca(point, subcuencas_gdf):
+    for idx, subcuenca in subcuencas_gdf.iterrows():
+        if point.within(subcuenca['geometry_subcuencas']):
+            return subcuenca['Nombre_sub']  
+    return None
+
+def encontrar_cuenca(point, cuencas_gdf):
+    for idx, cuenca in cuencas_gdf.iterrows():
+        if point.within(cuenca['geometry_cuencas']):
+            return cuenca['TRAMO']  
+    return None
+
+data_mediciones['Subcuenca'] = data_mediciones['geometry'].apply(lambda x: encontrar_subcuenca(x, geo_df_subcuencas))
+
+data_mediciones['Cuenca'] = data_mediciones['geometry'].apply(lambda x: encontrar_cuenca(x, geo_df_cuencas))
+
+print(data_mediciones)
+
+
+# print(data_mediciones)
+
+
 #data_mediciones = gpd.sjoin(data_mediciones, geo_df_subcuencas[['ID', 'Nombre_sub', 'geometry_subcuencas']], how='left', predicate='within')
 #data_mediciones = gpd.sjoin(data_mediciones, geo_df_cuencas[['OBJECTID', 'JURISDIC', 'geometry_cuencas']], how='left', predicate='within')
 
