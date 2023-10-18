@@ -15,12 +15,13 @@ limites_subcuencas = pd.read_csv("LIMITES_SUBCUENCAS_.csv")
 # data_mediciones["Latitud"] = data_mediciones["Latitud"].astype(float)
 # data_mediciones["Longitud"] = data_mediciones["Latitud"].astype(float)
 # data_mediciones.to_csv("acumar_mediciones.csv",index=False)
+
+
+# Por esto no anda lo de abajo
 for medicion in data_mediciones:
-    print(medicion[3])
+    print(medicion[2])
 
-
-
-
+#Chequear lo de arriba 
 for medicion in data_mediciones:
     point = Point(medicion["Longitud"],medicion["Latitud"])
     for subcuenca in limites_subcuencas:
