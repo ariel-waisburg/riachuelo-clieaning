@@ -1,6 +1,6 @@
 # Import packages
 import pandas as pd
-from pandas_profiling import ProfileReport
+# from pandas_profiling import ProfileReport
 
 # Import data
 data_mediciones = pd.read_csv("acumar_mediciones.csv")
@@ -39,7 +39,9 @@ def check_condition(row, tipo_uso):
     valor = row['Valor (=)']
     for _, ia in data_limites_uso.iterrows():
         if medida == ia['Parámetro']:
-            ia_value = parse_ia(ia[tipo_uso])
+            # Haria un if en esta fila ya esta True algun tipo anterior, que ponga automaticamente True, y te ahorras que entre en 
+            # los ifs de abajo
+            ia_value = parse_ia(ia[tipo_uso]) # Porque aca directamente no usamos valor? te ahorras que use toda la funcion total la columna valor ya la limpiamos
             if isinstance(ia_value, float) and ia[tipo_uso].startswith("<"):
                 return True if valor < ia_value else False
             elif isinstance(ia_value, float) and ia[tipo_uso].startswith(">"):
@@ -62,7 +64,7 @@ data_mediciones['Cumple Limites Ib'] = data_mediciones.apply(lambda row: check_c
 data_mediciones['Cumple Limites II'] = data_mediciones.apply(lambda row: check_condition(row, "II"), axis=1)
 data_mediciones['Cumple Limites III'] = data_mediciones.apply(lambda row: check_condition(row, "III"), axis=1)
 data_mediciones['Cumple Limites IV'] = data_mediciones.apply(lambda row: check_condition(row, "IV"), axis=1)
-print(data_mediciones[data_mediciones['Cumple Limites Ia'] == False])
+# print(data_mediciones[data_mediciones['Cumple Limites Ia'] == False])
 
 data_mediciones.to_csv("data_mediciones_con_dummies", index = False)
 
