@@ -38,9 +38,7 @@ def check_condition(row, tipo_uso):
     medida = row['Medida']
     valor = row['Valor (=)']
     for _, ia in data_limites_uso.iterrows():
-        if medida == ia['Parámetro']:
-            # Haria un if en esta fila ya esta True algun tipo anterior, que ponga automaticamente True, y te ahorras que entre en 
-            # los ifs de abajo
+        if medida == ia['Parámetro'] and 'Aguas' in row['Análisis']:
             ia_value = parse_ia(ia[tipo_uso]) # Porque aca directamente no usamos valor? te ahorras que use toda la funcion total la columna valor ya la limpiamos
             if isinstance(ia_value, float) and ia[tipo_uso].startswith("<"):
                 return True if valor < ia_value else False
@@ -51,22 +49,94 @@ def check_condition(row, tipo_uso):
                 return True if ia_min <= valor <= ia_max else False
     return None
 
-#def cumple_limites(row):
-    if (row['Medida'] in data_limites_uso['Parámetro'].values and row['Valor (=)'] >= data_limites_uso.loc[data_limites_uso['Parámetro'] == row['Medida'], 'I a'].values[0]):
-        return True
-    elif (row['Medida'] in data_limites_uso['Parámetro'].values):
-        return False
+
+# Los datos figuran distinto en los dos csv hay que cambiar alguno de los dos por ejemplo 
+# En limites tenes Nitrógeno Amoniacal que en las mediciones figura como Nitrógeno de Amoníaco (N-NH3) hay que ver todos y cambiarlo manual
+
+def igualar_medidas(row):
+    medida = row['Medida']
+    if medida == "Nitrógeno de Amoníaco (N-NH3)":  
+        return "Nitrógeno Amoniacal"
+    elif medida == "Clorofila A":
+        return "Clorofilia a"
+    elif medida == "Demanda Biológica de Oxígeno (DBO5)":
+        return "DBO5"
+    elif medida == "Detergentes (SAAM)":
+        return "Detergentes (S.A.A.M.)"
+    elif medida == "Índice de Estado Trófico- TSI- (Fósforo Total) (TSI Fósforo Total)":
+        return "Fósforo Total"
+    elif medida == "Nitrato (NO3-)": # Revisar
+        return "Nitrógeno de Nitratos"
+    elif medida == "Oxigeno disuelto":
+        return "OD"        
+    elif medida == "Temperatura (T)":
+        return "Temperatura"
+    elif medida == "Arsenico (As)": # Revisar
+        return "Arsénico total"
+    elif medida == "Cadmio" or medida == "Cadmio (Cd)": # Revisar
+        return "Cadmio total"
+    elif medida == "Zinc (Zn)" or medida == "Zinc": #Zinc tiene distinta unidad es ml/kg y zinc (zn) es mg/l
+        return "Cinc total"     
+    elif medida == "Cianuros (CN)":
+        return "Cianuro total"  
+    elif medida == "Cobre (Cu)" or medida == "Cobre": # Diferentes unidades
+        return "Cobre total"  
+    elif medida == "Cromo (Cr)" or medida == "Cromo": # Diferentes unidades
+        return "Cromo total"  
+    elif medida == "Cromo (Cr)" or medida == "Cromo": # Diferentes unidades
+        return "Cromo total"  
+    # Cromo hexavalente
+    elif medida == "Mercurio" or medida == 'Mercurio (Hg)':
+        return 'Mercurio total'
+    elif medida == "Niquel (Ni)" or medida == 'Niquel':
+        return 'Níquel total'
+    elif medida == "Plomo (Pb)" or medida == 'Plomo':
+        return 'Plomo total'    
+    elif medida == "Plomo (Pb)" or medida == 'Plomo':
+        return 'Plomo total'    
+    # Aldrín     
+    elif medida == "Clordano Técnico":
+        return "Clordano"   
+    # DDT (Total Isómeros)
+    elif medida == "Dieldrin":
+        return "Dieldrín"
+    elif medida == "Endosulfán total":
+        return "Endosulfán"       
+    elif medida == "Endrin":
+        return "Endrín"  
+    # Heptacloro 
+    # Heptacloro epóxido
+    elif medida == "Hexaclorobenceno":
+        return "Hexacloro benceno"
     else:
-        return None
+        return medida
+    # Metoxicloro
+    # Paration
+    # Malation
+    # 2,4 D
 
-data_mediciones['Cumple Limites Ia'] = data_mediciones.apply(lambda row: check_condition(row, "I a"), axis=1)
-data_mediciones['Cumple Limites Ib'] = data_mediciones.apply(lambda row: check_condition(row, "I b"), axis=1)
-data_mediciones['Cumple Limites II'] = data_mediciones.apply(lambda row: check_condition(row, "II"), axis=1)
-data_mediciones['Cumple Limites III'] = data_mediciones.apply(lambda row: check_condition(row, "III"), axis=1)
-data_mediciones['Cumple Limites IV'] = data_mediciones.apply(lambda row: check_condition(row, "IV"), axis=1)
-# print(data_mediciones[data_mediciones['Cumple Limites Ia'] == False])
 
-data_mediciones.to_csv("data_mediciones_con_dummies", index = False)
+# def buscar_medida_con_cadena(cadena):
+#     medidas = set()
+#     for _, row in data_mediciones.iterrows():
+#         if cadena in row['Medida']:
+#             medidas.add(row['Medida'])
+#     for valor in medidas:
+#         print(valor)
+
+# buscar_medida_con_cadena("amon")
+
+
+
+
+
+# data_mediciones['Medida'] = data_mediciones.apply(lambda row: igualar_medidas(row),axis=1)
+# data_mediciones['Cumple Limites Ia'] = data_mediciones.apply(lambda row: check_condition(row, "I a"), axis=1)
+# data_mediciones['Cumple Limites Ib'] = data_mediciones.apply(lambda row: check_condition(row, "I b"), axis=1)
+# data_mediciones['Cumple Limites II'] = data_mediciones.apply(lambda row: check_condition(row, "II"), axis=1)
+# data_mediciones['Cumple Limites III'] = data_mediciones.apply(lambda row: check_condition(row, "III"), axis=1)
+# data_mediciones['Cumple Limites IV'] = data_mediciones.apply(lambda row: check_condition(row, "IV"), axis=1)
+# data_mediciones.to_csv("data_mediciones_con_dummies.csv", index = False)
 
 # Aplicar esto al resto de los limites de usos y armar matriz de DUMMIES.
     # En el primer TRUE, al resto se le aplica TRUE.
