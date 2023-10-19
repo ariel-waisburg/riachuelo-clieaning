@@ -1,0 +1,33 @@
+import pandas as pd
+from shapely.geometry import Point
+from shapely.wkt import loads
+import geopandas as gpd
+
+def mapear_valores(point, gdf, column_geom, col_name):
+    for idx, valor in gdf.iterrows():
+        if point.within(valor[column_geom]):
+            return valor[col_name]  
+    return None
+
+# Load data
+data_dummies_geom = pd.read_csv("data_mediciones_dummie_y_cuencas.csv")
+data_limites_subcuencas = gpd.read_file('LIMITES_SUBCUENCAS_.csv')
+data_limites_cuencas = gpd.read_file('TRAMOS_DE_CUENCA.csv')
+
+# Convert geometries
+data_limites_subcuencas['geometry_subcuencas'] = data_limites_subcuencas['wkb_geometry'].apply(lambda x: loads(x))
+data_limites_cuencas['geometry_cuencas'] = data_limites_cuencas['wkb_geometry'].apply(lambda x: loads(x))
+
+# Create GeoDataFrames
+data_dummies_geom['geometry'] = data_dummies_geom.apply(lambda row: Point(float(row['Longitud'].replace(',', '.')), float(row['Latitud'].replace(',', '.'))), axis=1)
+data_dummies_geom = gpd.GeoDataFrame(data_dummies_geom, geometry='geometry')
+
+geo_df_subcuencas = gpd.GeoDataFrame(data_limites_subcuencas, geometry='geometry_subcuencas')
+geo_df_cuencas = gpd.GeoDataFrame(data_limites_cuencas, geometry='geometry_cuencas')
+
+# Apply mapping function
+data_dummies_geom['Subcuenca'] = data_dummies_geom['geometry'].apply(lambda x: mapear_valores(x, geo_df_subcuencas, 'geometry_subcuencas', 'ID'))
+data_dummies_geom['Cuenca'] = data_dummies_geom['geometry'].apply(lambda x: mapear_valores(x, geo_df_cuencas, 'geometry_cuencas', 'TRAMO'))
+
+# Save to CSV
+data_dummies_geom.to_csv("data_mediciones_dummie_y_cuencas.csv",index=False)
