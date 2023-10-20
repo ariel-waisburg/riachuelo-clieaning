@@ -1,5 +1,8 @@
 # Import packages
 import pandas as pd
+from shapely.geometry import Point
+from shapely.geometry import shape
+from shapely.geometry import MultiPolygon
 
 # Functions
 def parse_ia(ia_value):
@@ -54,21 +57,24 @@ def standardize_measurement(medida):
         "Hexaclorobenceno": "Hexacloro benceno",
     }
     return standardized_measurements.get(medida, medida)
-    # Cromo hexavalente
-    # Aldrín  
-    # DDT (Total Isómeros)
-    # Heptacloro
-    # Heptacloro epóxido
-    # Metoxicloro
-    # Paration
-    # Malation
-    # 2,4 D
+    
+# Sin mediciones:
+# Cromo hexavalente
+# Aldrín  
+# DDT (Total Isómeros)
+# Heptacloro
+# Heptacloro epóxido
+# Metoxicloro
+# Paration
+# Malation
+# 2,4 D
 
 # Import data
 data_mediciones = pd.read_csv("acumar_mediciones.csv")
 data_mediciones['Valor (=)'] = data_mediciones['Valor (=)'].str.replace('"', '',regex=True).replace(',', '.',regex=True).astype(float)
 data_mediciones['Fecha'] = pd.to_datetime(data_mediciones['Fecha'], format = "%d/%m/%Y")
 data_limites_uso = pd.read_csv("limites_admisibles_uso.csv")
+limites_subcuencas = pd.read_csv("LIMITES_SUBCUENCAS_.csv")
 
 # Apply mapping
 data_mediciones['Medida'] = data_mediciones['Medida'].apply(standardize_measurement)
