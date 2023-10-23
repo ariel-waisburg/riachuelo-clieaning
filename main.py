@@ -60,8 +60,6 @@ def standardize_measurement(medida):
     
 def geomapping(point, gdf, column_geom, col_name):
     for idx, valor in gdf.iterrows():
-        print(point)
-        print(point.within(valor[column_geom]))
         if point.within(valor[column_geom]):
             return valor[col_name]
     return None
