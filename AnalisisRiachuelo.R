@@ -56,6 +56,16 @@ resumen_filtrado[resumen_filtrado$Nivel_Minimo==5,]
 # Cantidad de niveles por cuenca
 tabla_resumen %>%  summarise(n = n(), .by = c(Cuenca, Nivel_Minimo))
 
+promediosiv <- tabla_resumen %>%
+  group_by(Cuenca, year(Fecha)) %>%
+  summarize(Promedio_Nivel = mean(Nivel_Minimo))
+
+graficoiv <- ggplot(promediosiv, aes(x = `year(Fecha)`, y = Promedio_Nivel, group = Cuenca, color = Cuenca)) +
+  geom_line() +
+  labs(x = "Año", y = "Promedio de nivel de agua")
+
+graficoiv
+
 # Grafico 1
 # Evolucion del nivel agrupado año a año de cada cuenca
 promedios <- dfsinna %>%
@@ -70,25 +80,25 @@ grafico
 
 # Grafico 1 desde nivel cumple iv
 
-# promedios <- dfsinna %>%
-#   group_by(Cuenca, year(Fecha)) %>%
-#   summarize(Promedio_Nivel = mean(`Cumple Limites IV`))
-# 
-# grafico <- ggplot(promedios, aes(x = `year(Fecha)`, y = Promedio_Nivel, group = Cuenca, color = Cuenca)) +
-#   geom_line() +
-#   labs(x = "Año", y = "Promedio de Nivel", title = "Evolución Anual del Promedio de Nivel por Cuenca")
-# 
-# grafico
+promediosiv <- dfsinna %>%
+  group_by(Cuenca, year(Fecha)) %>%
+  summarize(Promedio_Nivel = mean(`Cumple Limites IV`))
+
+graficoiv <- ggplot(promediosiv, aes(x = `year(Fecha)`, y = Promedio_Nivel, group = Cuenca, color = Cuenca)) +
+  geom_line() +
+  labs(x = "Año", y = "Proporcion de aprobación de cumplimiento para la categoria IV")
+
+graficoiv
 
 # Grafico 2
 # Evolucion del nivel agrupado año a año de cada subcuenca de su cuenca respectiva
-promedios2 <- dfsinna %>%
-  group_by(Subcuenca,Cuenca, year(Fecha)) %>%
-  summarize(Promedio_Nivel = mean(nivel))
+promedios2 <- tabla_resumen %>%
+  group_by(`Sub Cuenca`,Cuenca, year(Fecha)) %>%
+  summarize(Promedio_Nivel = mean(Nivel_Minimo))
 
-grafico2 <- ggplot(promedios2, aes(x = `year(Fecha)`, y = Promedio_Nivel, group = Subcuenca, color = factor(Subcuenca))) +
+grafico2 <- ggplot(promedios2, aes(x = `year(Fecha)`, y = Promedio_Nivel, group = `Sub Cuenca`, color = factor(`Sub Cuenca`))) +
   geom_line() +
-  labs(x = "Año", y = "Promedio de Nivel", title = "Evolución Anual del Promedio de Nivel por Cuenca", color = "Subcuenca") + facet_wrap(~Cuenca) + scale_color_manual(values = paleta) 
+  labs(x = "Año", y = "Promedio de Nivel", color = "Subcuenca") + facet_wrap(~Cuenca) + scale_color_manual(values = paleta) 
 
 grafico2
 
@@ -103,7 +113,7 @@ resumen <- dfsinna %>%
 # Crear el gráfico de barras apiladas
 grafico3 <- ggplot(resumen, aes(x = Cuenca, y = n, fill = factor(Subcuenca))) +
   geom_bar(stat = "identity") +
-  labs(x = "Cuenca", y = "Cantidad de Registros", title = "Cantidad de registros por subcuenca dentro de cada cuenca", fill = "Subcuenca") + scale_fill_manual(values = paleta)
+  labs(x = "Cuenca", y = "Cantidad de Registros", fill = "Subcuenca") + scale_fill_manual(values = paleta)
 
 grafico3
 
@@ -111,9 +121,9 @@ grafico3
 
 cantidad = dfsinna %>% group_by(year(Fecha)) %>% summarize(n = n())
 graficoq <- ggplot(cantidad, aes(x = `year(Fecha)`, y = n)) +
-  geom_line() +
-  labs(x = "Año", y = "Cantidad de registros")
-
+  geom_line() + labs(x = "Año", y = "Cantidad de registros")
+  
+graficoq
 
 # Tabla de frecuencia parametros
 tabla_proporcion <- dfsinna %>%
