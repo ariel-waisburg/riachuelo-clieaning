@@ -16,8 +16,6 @@ data_mediciones_geolocaliazadas_dummies$Fecha %>% summary()
 
 nrow(data_mediciones_geolocaliazadas_dummies)
 
-colnames(dfsinna)
-
 data1 = data_mediciones_geolocaliazadas_dummies %>% group_by(Estación, Fecha) %>% mutate(nivel = case_when(
   `Cumple Limites Ia`== TRUE ~ 1,
   `Cumple Limites Ib`== TRUE ~ 2,
@@ -70,6 +68,18 @@ grafico <- ggplot(promedios, aes(x = `year(Fecha)`, y = Promedio_Nivel, group = 
 
 grafico
 
+# Grafico 1 desde nivel cumple iv
+
+# promedios <- dfsinna %>%
+#   group_by(Cuenca, year(Fecha)) %>%
+#   summarize(Promedio_Nivel = mean(`Cumple Limites IV`))
+# 
+# grafico <- ggplot(promedios, aes(x = `year(Fecha)`, y = Promedio_Nivel, group = Cuenca, color = Cuenca)) +
+#   geom_line() +
+#   labs(x = "Año", y = "Promedio de Nivel", title = "Evolución Anual del Promedio de Nivel por Cuenca")
+# 
+# grafico
+
 # Grafico 2
 # Evolucion del nivel agrupado año a año de cada subcuenca de su cuenca respectiva
 promedios2 <- dfsinna %>%
@@ -97,6 +107,13 @@ grafico3 <- ggplot(resumen, aes(x = Cuenca, y = n, fill = factor(Subcuenca))) +
 
 grafico3
 
+# Evolucion de registros a lo largo de los años
+
+cantidad = dfsinna %>% group_by(year(Fecha)) %>% summarize(n = n())
+graficoq <- ggplot(cantidad, aes(x = `year(Fecha)`, y = n)) +
+  geom_line() +
+  labs(x = "Año", y = "Cantidad de registros")
+
 
 # Tabla de frecuencia parametros
 tabla_proporcion <- dfsinna %>%
@@ -117,9 +134,8 @@ top5vars = varianzas %>% head(5)
 
 tabla_proporcion_variables = tabla_proporcion %>% filter(Medida %in% top5vars$Medida)
 
-
 grafico4 <- ggplot(tabla_proporcion_variables, aes(x = año, y = Proporcion_TRUE, group = Medida, color = Medida)) +
   geom_line() +
-  labs(x = "Año", y = "Promedio de Nivel", title = "Evolución Anual del Promedio de Nivel por Cuenca", color = "Subcuenca") 
+  labs(x = "Año", y = "Promedio de Nivel", title = "Evolución  de los 5 parametros que mayor variaron", color = "Subcuenca") 
 
 grafico4
