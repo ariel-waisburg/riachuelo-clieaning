@@ -12,7 +12,7 @@ def parse_ia(ia_value):
         return tuple(ia_value_range)
     return float(ia_value)
     
-def check_dummie_condition(row, tipo_uso):
+#def check_dummie_condition(row, tipo_uso):
     medida = row['Medida']
     valor = row['Valor (=)']
     for _, ia in data_limites_uso.iterrows():
@@ -20,9 +20,24 @@ def check_dummie_condition(row, tipo_uso):
             ia_value = parse_ia(ia[tipo_uso])
             if isinstance(ia_value, tuple):
                 ia_min, ia_max = ia_value
-                return ia_min <= valor <= ia_max
-            return (valor > ia_value) if tipo_uso.startswith('>') else (valor < ia_value)
+                result = ia_min <= valor <= ia_max
+                return result
+            return (valor > ia_value) if ia[tipo_uso].startswith('>') else (valor < ia_value)
     return None
+
+def check_dummie_condition(row, tipo_uso, returnList):
+    medida = row['Medida']
+    valor = row['Valor (=)']
+    for _, ia in data_limites_uso.iterrows():
+        if medida == ia['Parámetro'] and 'Aguas' in row['Análisis']:
+            ia_value = parse_ia(ia[tipo_uso])
+            if isinstance(ia_value, tuple):
+                ia_min, ia_max = ia_value
+                result = ia_min <= valor <= ia_max
+                return (result if not returnList else [result, "-", ia[tipo_uso]])            
+            result = (valor > ia_value) if ia[tipo_uso].startswith('>') else (valor < ia_value)
+            return (result if not returnList else [result, ia[tipo_uso][0], ia_value])
+    return (None if not returnList else [None, None, None])
 
 def standardize_measurement(medida):
     standardized_measurements = {
@@ -89,11 +104,11 @@ data_limites_cuencas = gpd.read_file('TRAMOS_DE_CUENCA.csv')
 
 # Apply mapping
 data_mediciones['Medida'] = data_mediciones['Medida'].apply(standardize_measurement)
-data_mediciones['Cumple Limites Ia'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "I a"), axis=1)
-data_mediciones['Cumple Limites Ib'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "I b"), axis=1)
-data_mediciones['Cumple Limites II'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "II"), axis=1)
-data_mediciones['Cumple Limites III'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "III"), axis=1)
-data_mediciones['Cumple Limites IV'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "IV"), axis=1)
+data_mediciones['Cumple Limites Ia'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "I a", False), axis=1)
+data_mediciones['Cumple Limites Ib'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "I b", False), axis=1)
+data_mediciones['Cumple Limites II'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "II", False), axis=1)
+data_mediciones['Cumple Limites III'] = data_mediciones.apply(lambda row: check_dummie_condition(row, "III", False), axis=1)
+data_mediciones[['Cumple Limites IV', 'Tipo_Limite', 'Limite IV']] = data_mediciones.apply(lambda row: pd.Series(check_dummie_condition(row, "IV", True)), axis=1)
 
 # Convert geometries
 data_limites_subcuencas['geometry_subcuencas'] = data_limites_subcuencas['wkb_geometry'].apply(lambda x: loads(x))
@@ -105,7 +120,7 @@ data_mediciones = gpd.GeoDataFrame(data_mediciones, geometry='geometry')
 geo_df_subcuencas = gpd.GeoDataFrame(data_limites_subcuencas, geometry='geometry_subcuencas')
 geo_df_cuencas = gpd.GeoDataFrame(data_limites_cuencas, geometry='geometry_cuencas')
 
-data_mediciones['Subcuenca'] = data_mediciones['geometry'].apply(lambda x: geomapping(x, geo_df_subcuencas, 'geometry_subcuencas', 'ID'))
+data_mediciones['Subcuenca'] = data_mediciones['geometry'].apply(lambda x: geomapping(x, geo_df_subcuencas, 'geometry_subcuencas', 'Nombre_sub'))
 data_mediciones['Cuenca'] = data_mediciones['geometry'].apply(lambda x: geomapping(x, geo_df_cuencas, 'geometry_cuencas', 'TRAMO'))
 
 # Save to CSV
